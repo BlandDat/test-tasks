@@ -23,7 +23,7 @@ export class ViewerDisabledComponentDirectiveComponent extends MatButton{
     this.disabled = value;
     this.disableRipple = value;
     this._matTooltip.disabled = !value;
-    this.renderer.setStyle(this._elementRef.nativeElement, 'cursor', value ? 'not-allowed' : 'auto')
+    this._renderer.setStyle(this._elementRef.nativeElement, 'cursor', value ? 'not-allowed' : 'auto')
   }
   @HostBinding('class') get class(){
 
@@ -42,10 +42,10 @@ export class ViewerDisabledComponentDirectiveComponent extends MatButton{
 
   constructor(
       @Host() private readonly _matTooltip: MatTooltip,
+      private readonly _renderer: Renderer2,
       readonly elementRef: ElementRef<HTMLElement>,
       readonly platform: Platform,
       readonly zone: NgZone,
-      private readonly renderer: Renderer2
 
   ){
     super(elementRef, platform, zone)
