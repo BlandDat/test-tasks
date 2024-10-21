@@ -1,0 +1,49 @@
+@if (formEnabled()) {
+    <form class="p-4 absolute size-full left-0 right-0 bottom-0 top-0 flex flex-col gap-2 bg-foreground rounded" [formGroup]="chartConfigForm">
+        <mat-form-field class="h-max">
+            <mat-label>Chart type</mat-label>
+            <mat-select formControlName="chartType">
+                @for (chartType of chartTypes(); track chartType) {
+                    <mat-option [value]="chartType">{{chartType}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="h-max">
+            <mat-label>Sensor</mat-label>
+            <mat-select formControlName="sensorType" multiple>
+                @for (sensorType of chartSensors$ | async; track sensorType) {
+                    <mat-option [value]="sensorType">{{sensorType}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="h-max">
+            <mat-label>Color</mat-label>
+            <mat-select formControlName="chartColors" multiple>
+                @for (color of chartColors; track color) {
+                    <mat-option [value]="color">{{color}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <div class="example-button-row">
+            <button [disabled]="chartConfigForm.invalid" (click)="updateChart()" mat-raised-button>submit</button>
+        </div>
+    </form>
+}
+
+@if (chartData$ | async; as data) {
+    @if (chartLabels$ | async; as labels) {
+        <button *ngIf="!formEnabled()" (click)="formEnabled.set(true)" mat-mini-fab aria-label="Example icon button with a menu icon">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <canvas
+                baseChart
+                [options]="lineChartOptions"
+                [datasets]="chartConfigForm.controls.sensorType.value | dataByKey : data : chartConfigForm.controls.chartColors.value"
+                [labels]="labels"
+                [type]="$any(chartConfigForm.controls.chartType.value)">
+        </canvas>
+    }
+}
